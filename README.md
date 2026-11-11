@@ -1,4 +1,4 @@
-# library-management-systems
+# library-management-system
 ## Schema Decisions
 
 In designing the data layer for this library system, I chose a **relational approach** (PostgreSQL + Prisma) over a document-based approach (like MongoDB) for the following reasons:
