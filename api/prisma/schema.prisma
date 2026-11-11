@@ -1,0 +1,64 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// 1. Role Enum (Core Requirement)
+enum Role {
+  PATRON
+  LIBRARIAN
+}
+
+// 2. User Model (Core Requirement)
+model User {
+  id       Int      @id @default(autoincrement())
+  email    String   @unique
+  name     String
+  role     Role     @default(PATRON)
+  reviews  Review[] // Relation to Review (Stretch Goal)
+}
+
+// 3. Genre Model (Core Requirement)
+model Genre {
+  id    Int    @id @default(autoincrement())
+  name  String @unique
+  slug  String @unique
+  books Book[] // Relation to Book
+}
+
+// 4. Book Model (Core Requirement)
+model Book {
+  id              Int      @id @default(autoincrement())
+  title           String
+  author          String
+  isbn            String   @unique
+  totalCopies     Int      @default(1)
+  availableCopies Int      @default(1)
+  
+  // Foreign Key and Relation to Genre
+  genreId         Int
+  genre           Genre    @relation(fields: [genreId], references: [id])
+  
+  reviews         Review[] // Relation to Review (Stretch Goal)
+}
+
+// 5. Review Model (Stretch Goal)
+model Review {
+  id        Int      @id @default(autoincrement())
+  rating    Int      // e.g., 1 to 5 stars
+  comment   String?  // Optional comment
+  
+  // Relations
+  bookId    Int
+  book      Book     @relation(fields: [bookId], references: [id])
+  
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+}
